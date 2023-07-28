@@ -1,16 +1,13 @@
+import { Input } from '@/components/Input';
+import { Form, FormContainer } from './styles';
+
 export function FormArea(){
   return(
-    <div>
-      <form action="">
-        <div>
-          <label htmlFor="name">Nome do proprietário</label>
-          <input id='name' type="text" placeholder='Nome do proprietário' />
-        </div>
-        <div>
-          <label htmlFor="name">Nome do proprietário</label>
-          <input id='name' type="text" placeholder='Nome do proprietário' />
-        </div>
-      </form>
-    </div>
+    <FormContainer>
+      <Form action="">
+        <Input label='Nome' id='name' type="text" placeholder='Nome do proprietário' />
+        <Input label='Rua' id='street' type="text" placeholder='Rua' />
+      </Form>
+    </FormContainer>
   )
 }
