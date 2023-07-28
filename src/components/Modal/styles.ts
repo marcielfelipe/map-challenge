@@ -1,11 +1,11 @@
 import Modal from 'styled-react-modal'
 
 export const StyledModal = Modal.styled`
-  width:25rem;
+  width:40rem;
   height: 30rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 1;
+  z-index: 3;
 `

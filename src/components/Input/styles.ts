@@ -2,12 +2,14 @@ import { styled } from 'styled-components';
 
 
 export const InputContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
+  gap:.5rem ;
 `
 
 export const InputLabel = styled.label`
-  padding-left: .5rem;
+  padding-left: .8rem;
 `
 
 export const InputStyled = styled.input`

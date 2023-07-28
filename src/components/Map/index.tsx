@@ -11,8 +11,8 @@ export default function Map(){
     const draw = e.layer
     console.log(draw._leaflet_id)
     dialog?.open({
-      element:<FormArea/>,
-    })
+      element:<FormArea title='Cadastrar área'/>,
+    }) 
   }
   function _onEditPath(e:LeafletEvent){
     console.log(e);
@@ -25,10 +25,8 @@ export default function Map(){
     const draw = e.layer
     console.log(draw._leaflet_id)
     dialog?.open({
-      element:<div>
-        <p>{draw._leaflet_id}</p>
-      </div>,
-    })
+      element:<FormArea title={`Detalhes da área: ${draw._leaflet_id}`}/>,
+    }) 
   }
   return(
     <MapContainer 

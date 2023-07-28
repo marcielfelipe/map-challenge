@@ -8,8 +8,8 @@ export const GlobalStyle = createGlobalStyle<{ $whiteColor?: boolean; }>`
     box-sizing: border-box;
   }
   body {
-    color: ${props => (props.$whiteColor ? 'white' : 'black')};
     width: 100vw;
+    height: 100vh;
   }
   button{
     font-weight:700;
