@@ -9,20 +9,27 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.0.4",
     "@types/node": "20.4.5",
     "@types/react": "18.2.17",
     "@types/react-dom": "18.2.7",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.12",
     "leaflet": "^1.9.4",
+    "leaflet-draw": "^1.0.4",
     "next": "13.4.12",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-leaflet": "^4.2.1",
+    "react-leaflet-draw": "^0.20.4",
+    "react-modal": "^3.16.1",
     "styled-components": "^6.0.5",
+    "styled-react-modal": "^3.0.1",
     "typescript": "5.1.6"
   },
   "devDependencies": {
-    "@types/leaflet": "^1.9.3"
+    "@types/leaflet": "^1.9.3",
+    "@types/react-modal": "^3.16.0",
+    "@types/styled-react-modal": "^1.2.2"
   }
 }
