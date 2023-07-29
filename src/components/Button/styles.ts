@@ -10,9 +10,18 @@ export const ButtonStyled = styled.button<IButton>`
   padding-block: .5rem;
   border-radius: 2rem;
   width: 100%;
+  max-height: 40px;
   cursor: pointer;
   &:hover{
     filter:brightness(0.9);
     transition: .2s;
+    &:disabled{
+      filter:brightness(0.8);
+      
+    }
+  }
+  &:disabled{
+    cursor: not-allowed;
+    filter:brightness(0.8);
   }
 `;

@@ -1,31 +1,143 @@
-import { Input } from '@/components/Input';
-import { Form, FormContainer, FormFooter, FormGroup, Title } from './styles';
-import { Button } from '@/components/Button';
+import { Input } from "@/components/Input";
+import { Form, FormContainer, FormFooter, FormGroup, Title } from "./styles";
+import { Button } from "@/components/Button";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useDialog } from "@/contexts/dialog";
 
-interface IFormArea{
-  defaultValues?: any,
-  title:string
+interface IFormArea {
+  defaultValues?: any;
+  title: string;
 }
-export function FormArea({title}:IFormArea){
-  return(
+
+const createAreaSchema = z.object({
+  name: z.string({
+    required_error: "Obrigatório",
+    invalid_type_error: "Insira um dado válido",
+  }),
+  street: z.string({
+    required_error: "Obrigatório",
+    invalid_type_error: "Insira um dado  válido",
+  }),
+  district: z.string({
+    required_error: "Obrigatório",
+    invalid_type_error: "Insira um dado válido",
+  }),
+  city: z.string({
+    required_error: "Obrigatório",
+    invalid_type_error: "Insira um dado válido",
+  }),
+  state: z.string({
+    required_error: "Obrigatório",
+    invalid_type_error: "Insira um dado válido",
+  }),
+  country: z.string({
+    required_error: "Obrigatório",
+    invalid_type_error: "Insira um dado válido",
+  }),
+});
+
+export type CreateAreaSchemaOutput = z.infer<typeof createAreaSchema>;
+
+export function FormArea({ title,defaultValues }: IFormArea) {
+  const dialog = useDialog();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<CreateAreaSchemaOutput>({
+    mode: "onChange",
+    reValidateMode: "onSubmit",
+    resolver: zodResolver(createAreaSchema),
+    defaultValues
+  });
+
+  const onSubmit: SubmitHandler<CreateAreaSchemaOutput> = (data) => {
+    const createAreaParsed = createAreaSchema.parse(data);
+  };
+
+  return (
     <FormContainer>
       <Title>{title}</Title>
-      <Form action="">
-          <Input label='Nome' id='name' type="text" placeholder='Nome do proprietário' />
-          <Input  label='Rua' id='street' type="text" placeholder='Rua' />
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Input
+          errors={errors}
+          label="Nome"
+          id="name"
+          name="name"
+          type="text"
+          placeholder="Nome do proprietário"
+          register={register}
+          required
+        />
+        <Input
+          errors={errors}
+          label="Rua"
+          id="street"
+          name="street"
+          register={register}
+          type="text"
+          placeholder="Rua"
+          required
+        />
         <FormGroup>
-          <Input label='Bairro' id='district' type="text" placeholder='Bairro' />
-          <Input label='Cidade' id='city' type="text" placeholder='Cidade' />
+          <Input
+            errors={errors}
+            label="Bairro"
+            id="district"
+            name="district"
+            type="text"
+            register={register}
+            placeholder="Bairro"
+            required
+          />
+          <Input
+            errors={errors}
+            label="Cidade"
+            id="city"
+            name="city"
+            type="text"
+            register={register}
+            placeholder="Cidade"
+            required
+          />
         </FormGroup>
         <FormGroup>
-          <Input label='Estado' id='state' type="text" placeholder='Estado' />
-          <Input label='País' id='country' type="text" placeholder='País' />
+          <Input
+            errors={errors}
+            label="Estado"
+            id="state"
+            name="state"
+            type="text"
+            register={register}
+            placeholder="Estado"
+            required
+          />
+          <Input
+            errors={errors}
+            label="País"
+            id="country"
+            name="country"
+            type="text"
+            register={register}
+            placeholder="País"
+            required
+          />
         </FormGroup>
         <FormFooter>
-          <Button variant='outlined' >Voltar</Button>
-          <Button type='submit'>Salvar</Button>
+          <Button
+            type="button"
+            onClick={() => dialog?.close()}
+            variant="outlined"
+          >
+            Voltar
+          </Button>
+          <Button type="submit">
+            Salvar
+          </Button>
         </FormFooter>
       </Form>
     </FormContainer>
-  )
+  );
 }

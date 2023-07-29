@@ -17,15 +17,16 @@ export const FormGroup = styled.div`
 `
 
 export const Form = styled.form`
-  border-radius:2rem;
   display: flex;
   flex-direction: column;
   gap: .7rem;
+  height: 85%;
 `
-export const FormFooter = styled.form`
-  width: 100%;
+export const FormFooter = styled.div`
   display: flex;
   gap: 1rem;
+  height: 100%;
+  align-items: end;
 `
 export const TextField = styled.input`
   background-color: white;
