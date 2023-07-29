@@ -86,7 +86,6 @@ export default function Map() {
     const {
       layers: { _layers },
     } = e;
-    console.log(_layers);
   }
 
   function handleOpenDetails(e: LeafletMouseEvent) {
@@ -95,7 +94,6 @@ export default function Map() {
       localStorage.getItem("@map-challenge:areas") ?? "[]"
     );
     const areaDetails = areas.find((area) => area.drawId === draw._leaflet_id);
-    console.log(areaDetails);
     dialog?.open({
       element: (
         <FormArea
@@ -157,8 +155,6 @@ export default function Map() {
             marker: false,
             polyline: false,
           }}
-          onDeleteStart={() => console.log("start deleting")}
-          onDeleteStop={() => console.log("stop deleting")}
         />
 
         {/* {mapLayers.map((layer) => (

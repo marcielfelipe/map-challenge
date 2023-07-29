@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
       `}</style>
       <ToastContainer
         draggable={false}
-        autoClose={2000}
+        autoClose={3000}
         position="top-center"
       />
       <StyledComponentsRegistry>
