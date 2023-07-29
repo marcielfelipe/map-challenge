@@ -22,7 +22,7 @@ export function FormArea({title}:IFormArea){
           <Input label='País' id='country' type="text" placeholder='País' />
         </FormGroup>
         <FormFooter>
-          <Button >Voltar</Button>
+          <Button variant='outlined' >Voltar</Button>
           <Button type='submit'>Salvar</Button>
         </FormFooter>
       </Form>

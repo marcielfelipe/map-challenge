@@ -1,8 +1,10 @@
 import { ComponentProps } from 'react';
 import { ButtonStyled } from './styles';
 
-type ButtonProps = ComponentProps<'button'>
+export interface IButton extends ComponentProps<'button'>{
+  variant?: 'outlined'|'contained'
+}
 
-export function Button(props:ButtonProps){
-  return <ButtonStyled {...props} />
+export function Button({variant='contained', ...props}:IButton){
+  return <ButtonStyled variant={variant} {...props} />
 }
