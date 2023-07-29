@@ -51,21 +51,24 @@ export default function Map() {
       ),
     });
   }
-  function _onEditPath(e: LeafletEvent) {}
+  function _onEditPath(e: LeafletEvent) {
+
+  }
   function _onDeleted(e: LeafletEvent) {
-    console.log("deleted");
+    
+    
   }
   function handleOpenDetails(e: LeafletMouseEvent) {
     const draw = e.layer;
     const areas: CreateAreaSchemaOutput[] = JSON.parse(
       localStorage.getItem("@map-challenge:areas") ?? "[]"
     );
-    const areaDetails = areas.find((area) => area.drawId === draw._leaflet_id);
+    const areaDetails = areas.find((area) => area.drawId === Number(draw.options.attribution));
     console.log(areaDetails)
     dialog?.open({
       element: (
         <FormArea
-          title={`Detalhes da área: ${draw._leaflet_id}`}
+          title={`Detalhes da área: ${draw.options.attribution}`}
           reference={draw._leaflet_id}
           defaultValues={areaDetails}
           type="view"
@@ -108,9 +111,14 @@ export default function Map() {
           }}
           onDeleteStart={() => console.log("start deleting")}
           onDeleteStop={() => console.log("stop deleting")}
+          
         />
         {mapLayers.map((layer) => (
-            <Polygon  key={layer.id} positions={layer.positions}/>
+            <Polygon 
+              key={layer.id} 
+              positions={layer.positions}  
+              attribution={String(layer.id)}
+            />
         ))}
       </FeatureGroup>
 
