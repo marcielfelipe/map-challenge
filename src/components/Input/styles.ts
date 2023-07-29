@@ -11,6 +11,7 @@ export const InputContainer = styled.div`
 export const InputLabel = styled.label`
   padding-left: .8rem;
   padding-bottom: .5rem;
+  font-size: .8rem;
 `
 export const InputError = styled.span`
   color: ${props =>props.theme.error};

@@ -14,6 +14,10 @@ interface IFormArea {
 }
 
 const createAreaSchema = z.object({
+  nameArea: z.string({
+    required_error: "Obrigatório",
+    invalid_type_error: "Insira um dado válido",
+  }),
   name: z.string({
     required_error: "Obrigatório",
     invalid_type_error: "Insira um dado válido",
@@ -62,8 +66,23 @@ export function FormArea({ title, defaultValues,reference,type }: IFormArea) {
 
   const onSubmit: SubmitHandler<CreateAreaSchemaOutput> = (data) => {
     const createAreaParsed = createAreaSchema.parse(data);
-    const areas: CreateAreaSchemaOutput[] = JSON.parse(localStorage.getItem("@map-challenge:areas") ?? "[]")
-    areas.push(createAreaParsed);
+    var areas: CreateAreaSchemaOutput[] = JSON.parse(localStorage.getItem("@map-challenge:areas") ?? "[]")
+
+    if(areas.find(a=>a.drawId===createAreaParsed.drawId)){
+      areas.map(area=>{
+        if(area.drawId===createAreaParsed.drawId){
+          area.nameArea=createAreaParsed.nameArea
+          area.name=createAreaParsed.name
+          area.street=createAreaParsed.street
+          area.district=createAreaParsed.district
+          area.city=createAreaParsed.city
+          area.state=createAreaParsed.state
+          area.country=createAreaParsed.country
+        }
+      })
+    }else{
+      areas.push(createAreaParsed);
+    }
     localStorage.setItem("@map-challenge:areas", JSON.stringify(areas));
     reset()
     dialog?.close()
@@ -73,6 +92,16 @@ export function FormArea({ title, defaultValues,reference,type }: IFormArea) {
     <FormContainer>
       <Title>{title}</Title>
       <Form onSubmit={handleSubmit(onSubmit)}>
+        <Input
+          errors={errors}
+          label="Nome da propriedade"
+          id="nameArea"
+          name="nameArea"
+          type="text"
+          placeholder="Nome da propriedade"
+          register={register}
+          required
+        />
         <Input
           errors={errors}
           label="Nome"
@@ -137,22 +166,16 @@ export function FormArea({ title, defaultValues,reference,type }: IFormArea) {
             required
           />
         </FormGroup>
-        {
-          type === 'view'?
-            <FormFooter>
-              <Button
-                type="button"
-                onClick={() => dialog?.close()}
-                variant="outlined"
-              >
-                Voltar
-              </Button>
-            </FormFooter>
-          :
-            <FormFooter>
-              <Button type="submit">Salvar</Button>
-            </FormFooter>
-        }
+        <FormFooter>
+          <Button
+            type="button"
+            onClick={() => dialog?.close()}
+            variant="outlined"
+          >
+            Voltar
+          </Button>
+          <Button type="submit">Salvar</Button>
+        </FormFooter>
       </Form>
     </FormContainer>
   );

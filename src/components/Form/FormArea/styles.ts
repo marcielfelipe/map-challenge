@@ -24,7 +24,6 @@ export const Form = styled.form`
   flex-direction: column;
   gap: .7rem;
   height: 85%;
-  margin-top: 2rem;
 `
 export const FormFooter = styled.div`
   display: flex;
