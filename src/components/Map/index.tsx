@@ -176,7 +176,7 @@ function AddLayers({mapLayers}:any){
   useEffect(() => {
     console.log('effect')
     console.log(mapLayers)
-    mapLayers.length>0 && mapLayers?.map(layer=>{
+    mapLayers.length>0 && mapLayers?.map((layer:any)=>{
       console.log(layer)
       container.addLayer(polygon(layer.positions))
     })
