@@ -1,12 +1,11 @@
 import { useState, useRef, useEffect, Fragment } from "react";
 import { useDialog } from "@/contexts/dialog";
-import { LeafletEvent, LeafletMouseEvent } from "leaflet";
+import { LeafletEvent, LeafletMouseEvent,latLng,polygon } from "leaflet";
 import {
   MapContainer,
   TileLayer,
   FeatureGroup,
   Polygon,
-  GeoJSON,
 } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import { CreateAreaSchemaOutput, FormArea } from "../Form/FormArea";
@@ -14,6 +13,7 @@ import axios from "axios";
 import { toast } from 'react-toastify';
 import geocodeService from '@/services/geocode.service';
 import { ICoordinates } from '@/services/types';
+import { useLeafletContext } from '@react-leaflet/core';
 
 interface IMapLayer {
   id: number;
@@ -52,6 +52,15 @@ export default function Map() {
       }
     );
   }
+  // function removeItemsNotInArray2(savedAreas: CreateAreaSchemaOutput[], array2: any) {
+  //   // Cria um novo array que conterá apenas os itens presentes em array2
+  //   const newArray = array2.filter((item2) => {
+  //     // Verifica se o item2.id está presente em algum item de array1
+  //     return savedAreas.some((savedArea) => savedArea.drawId === item2.id);
+  //   });
+  
+  //   return newArray;
+  // }
   async function openFormArea(reference:number,defaultValues:CreateAreaSchemaOutput){
     dialog?.open({
       element: (
@@ -68,7 +77,7 @@ export default function Map() {
   function _onCreate(e: any) {
     const draw = e.layer;
     const newMapLayers =
-      JSON.parse(localStorage.getItem("drawnPolygons")!) || mapLayers;
+      JSON.parse(localStorage.getItem("drawnPolygons")!) || [];
     newMapLayers.push({
       id: draw._leaflet_id,
       positions: draw.getLatLngs()[0],
@@ -83,9 +92,13 @@ export default function Map() {
 
   function onEdit(e: LeafletEvent) {}
   function _onDeleted(e: any) {
-    const {
-      layers: { _layers },
-    } = e;
+    // const {
+    //   layers: { _layers },
+    // } = e;
+    // console.log(_layers)
+    // const areas: CreateAreaSchemaOutput[] = JSON.parse(
+    //   localStorage.getItem("@map-challenge:areas") ?? "[]"
+    // );
   }
 
   function handleOpenDetails(e: LeafletMouseEvent) {
@@ -107,10 +120,10 @@ export default function Map() {
   }
 
   useEffect(() => {
-    const savedMapLayers =
+    const savedMapLayers:any[] =
       JSON.parse(localStorage.getItem("drawnPolygons")!) || [];
     setMapLayers([...savedMapLayers]);
-  }, []);
+  },[])
 
   return (
     <MapContainer
@@ -127,6 +140,7 @@ export default function Map() {
         eventHandlers={{
           click: (e) => handleOpenDetails(e),
         }}
+        pane=''
       >
         <EditControl
           position="topright"
@@ -141,6 +155,7 @@ export default function Map() {
             polyline: false,
           }}
         />
+        <AddLayers mapLayers={JSON.parse(localStorage.getItem("drawnPolygons")!) || []}/>
 
         {/* {mapLayers.map((layer) => (
             <Polygon 
@@ -152,4 +167,23 @@ export default function Map() {
       </FeatureGroup>
     </MapContainer>
   );
+}
+
+function AddLayers({mapLayers}:any){
+  const context = useLeafletContext()
+  const container = context.layerContainer || context.map
+
+  useEffect(() => {
+    console.log('effect')
+    console.log(mapLayers)
+    mapLayers.length>0 && mapLayers?.map(layer=>{
+      console.log(layer)
+      container.addLayer(polygon(layer.positions))
+    })
+   
+   
+  }, []);
+  return(
+    <p>opa</p>
+  )
 }
