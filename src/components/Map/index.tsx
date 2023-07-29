@@ -11,6 +11,9 @@ import {
 import { EditControl } from "react-leaflet-draw";
 import { CreateAreaSchemaOutput, FormArea } from "../Form/FormArea";
 import axios from "axios";
+import { toast } from 'react-toastify';
+import geocodeService from '@/services/geocode.service';
+import { ICoordinates } from '@/services/types';
 
 interface IMapLayer {
   id: number;
@@ -22,36 +25,44 @@ export default function Map() {
   const mapRef = useRef(null);
   const [mapLayers, setMapLayers] = useState<IMapLayer[]>([]);
 
-  async function getAddress(coordinates:{lat:number,lng:number}){
-    const geocodeApiUrl = `
-      https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.lat},${coordinates.lng}
-      &key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
-    axios
-      .get(geocodeApiUrl)
-      .then((response) => {
-        if (response.data.results.length > 0) {
-          return  response.data.results[0];
+  async function getAddress(coordinates:ICoordinates,reference:number){
+    toast.promise(
+      geocodeService.getAddress(coordinates).then(({data}) => {
+        const firstAddress = data.results[0]
+        const defaultValues:CreateAreaSchemaOutput={
+          street:`${firstAddress.address_components[1]?.long_name}, ${firstAddress.address_components[0]?.long_name}`,
+          district: firstAddress.address_components[2]?.long_name,
+          city: firstAddress.address_components[3]?.long_name,
+          state:firstAddress.address_components[4]?.long_name,
+          country: firstAddress.address_components[5]?.long_name,
+          name:'',
+          nameArea:'',
+          drawId:reference
         }
-      })
-      .catch((error) => {
-        console.error("Erro ao obter dados de geocodificação:", error);
-        return null
-      })
+        openFormArea(reference,defaultValues)
+      }),
+      {
+        pending: `Buscando endereço...`,
+        success: {
+          render() {
+            return `Endereço encontrado.`;
+          },
+        },
+        error: "Erro ao buscar endereço.",
+      }
+    );
   }
-  async function openFormArea(reference:number, coordinates:{lat:number,lng:number}){
-    const address = await getAddress(coordinates)
-
-    console.log(address)
+  async function openFormArea(reference:number,defaultValues:CreateAreaSchemaOutput){
     dialog?.open({
       element: (
         <FormArea
           title="Cadastrar área"
           reference={reference}
+          defaultValues={defaultValues}
           type="create"
         />
       ),
     });
-
   }
 
   function _onCreate(e: any) {
@@ -65,8 +76,7 @@ export default function Map() {
     setMapLayers(newMapLayers);
     
     localStorage.setItem("drawnPolygons", JSON.stringify(newMapLayers));
-
-    openFormArea(draw._leaflet_id,draw.getLatLngs()[0][0])
+    getAddress(draw.getLatLngs()[0][0],draw._leaflet_id)
   }
     
 
