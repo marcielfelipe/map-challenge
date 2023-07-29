@@ -5,6 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDialog } from "@/contexts/dialog";
+import { isFunctionTypeNode } from 'typescript';
 
 interface IFormArea {
   defaultValues?: CreateAreaSchemaOutput;
@@ -87,7 +88,6 @@ export function FormArea({ title, defaultValues,reference,type }: IFormArea) {
     reset()
     dialog?.close()
   };
-
   return (
     <FormContainer>
       <Title>{title}</Title>
@@ -169,8 +169,9 @@ export function FormArea({ title, defaultValues,reference,type }: IFormArea) {
         <FormFooter>
           <Button
             type="button"
-            onClick={() => dialog?.close()}
+            onClick={()=>dialog?.close()}
             variant="outlined"
+            disabled={type==='create'}
           >
             Voltar
           </Button>

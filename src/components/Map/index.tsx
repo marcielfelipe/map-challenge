@@ -105,21 +105,6 @@ export default function Map() {
       ),
     });
   }
-  const handleGeocode = async(coordinates: { lat: number; lng: number }) => {
-    const geocodeApiUrl = `
-      https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.lat},${coordinates.lng}
-      &key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
-    axios
-      .get(geocodeApiUrl)
-      .then((response) => {
-        if (response.data.results.length > 0) {
-          return response.data.results[0].formatted_address;
-        }
-      })
-      .catch((error) => {
-        console.error("Erro ao obter dados de geocodificação:", error);
-      });
-  };
 
   useEffect(() => {
     const savedMapLayers =
