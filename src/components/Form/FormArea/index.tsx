@@ -7,7 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDialog } from "@/contexts/dialog";
 
 interface IFormArea {
-  defaultValues?: any;
+  defaultValues?: CreateAreaSchemaOutput;
+  reference:number
   title: string;
 }
 
@@ -36,25 +37,35 @@ const createAreaSchema = z.object({
     required_error: "Obrigatório",
     invalid_type_error: "Insira um dado válido",
   }),
+  drawId: z.number().optional()
 });
 
 export type CreateAreaSchemaOutput = z.infer<typeof createAreaSchema>;
 
-export function FormArea({ title,defaultValues }: IFormArea) {
+export function FormArea({ title, defaultValues,reference }: IFormArea) {
   const dialog = useDialog();
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors },
   } = useForm<CreateAreaSchemaOutput>({
     mode: "onChange",
     reValidateMode: "onSubmit",
     resolver: zodResolver(createAreaSchema),
-    defaultValues
+    defaultValues:{
+      drawId:reference,
+      ...defaultValues
+    },
   });
 
   const onSubmit: SubmitHandler<CreateAreaSchemaOutput> = (data) => {
     const createAreaParsed = createAreaSchema.parse(data);
+    const areas: CreateAreaSchemaOutput[] = JSON.parse(localStorage.getItem("@map-challenge:areas") ?? "[]")
+    areas.push(createAreaParsed);
+    localStorage.setItem("@map-challenge:areas", JSON.stringify(areas));
+    reset()
+    dialog?.close()
   };
 
   return (
@@ -125,18 +136,29 @@ export function FormArea({ title,defaultValues }: IFormArea) {
             required
           />
         </FormGroup>
-        <FormFooter>
-          <Button
-            type="button"
-            onClick={() => dialog?.close()}
-            variant="outlined"
-          >
-            Voltar
-          </Button>
-          <Button type="submit">
-            Salvar
-          </Button>
-        </FormFooter>
+        {
+          defaultValues?.name?
+            <FormFooter>
+              <Button
+                type="button"
+                onClick={() => dialog?.close()}
+                variant="outlined"
+              >
+                Voltar
+              </Button>
+            </FormFooter>
+          :
+            <FormFooter>
+              <Button
+                type="button"
+                onClick={() => dialog?.close()}
+                variant="outlined"
+              >
+                Voltar
+              </Button>
+              <Button type="submit">Salvar</Button>
+            </FormFooter>
+        }
       </Form>
     </FormContainer>
   );

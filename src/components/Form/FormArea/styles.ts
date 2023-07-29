@@ -14,6 +14,9 @@ export const FormGroup = styled.div`
   display: flex;
   width: 100%;
   gap: 1rem;
+  @media (max-width: 550px) {
+    flex-direction: column;
+  }
 `
 
 export const Form = styled.form`
@@ -21,6 +24,7 @@ export const Form = styled.form`
   flex-direction: column;
   gap: .7rem;
   height: 85%;
+  margin-top: 2rem;
 `
 export const FormFooter = styled.div`
   display: flex;
