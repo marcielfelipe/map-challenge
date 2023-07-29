@@ -1,8 +1,8 @@
+'use client'
 import { useDialog } from "@/contexts/dialog";
 import {
   LeafletEvent,
   LeafletMouseEvent,
-  LeafletMouseEventHandlerFn,
 } from "leaflet";
 import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
@@ -13,7 +13,7 @@ export default function Map() {
   function _onCreate(e: LeafletEvent) {
     const draw = e.layer;
     dialog?.open({
-          element: <FormArea title="Cadastrar área" reference={draw._leaflet_id} />,
+          element: <FormArea title="Cadastrar área" reference={draw._leaflet_id} type='create' />,
     });
   }
   function _onEditPath(e: LeafletEvent) {
@@ -30,6 +30,7 @@ export default function Map() {
           title={`Detalhes da área: ${draw._leaflet_id}`}
           reference={draw._leaflet_id}
           defaultValues={areaDetails}
+          type='view'
         />
       ),
     });

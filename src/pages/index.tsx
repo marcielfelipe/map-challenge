@@ -1,9 +1,19 @@
-import { Container } from '@/components/Container/styles'
-import { MapContainer } from '@/components/MapContainer/styles'
-import Dialog from '@/components/Modal'
+'use client'
 import dynamic from 'next/dynamic'
 
 const Map = dynamic(() => import('../components/Map'),{
+  loading:()=><p>Loading...</p>,
+  ssr:false
+})
+const Container = dynamic(() => import('../components/Container/styles'),{
+  loading:()=><p>Loading...</p>,
+  ssr:false
+})
+const MapContainer = dynamic(() => import('../components/MapContainer/styles'),{
+  loading:()=><p>Loading...</p>,
+  ssr:false
+})
+const Dialog = dynamic(() => import('../components/Modal'),{
   loading:()=><p>Loading...</p>,
   ssr:false
 })

@@ -10,6 +10,7 @@ interface IFormArea {
   defaultValues?: CreateAreaSchemaOutput;
   reference:number
   title: string;
+  type:'create'|'view'
 }
 
 const createAreaSchema = z.object({
@@ -42,7 +43,7 @@ const createAreaSchema = z.object({
 
 export type CreateAreaSchemaOutput = z.infer<typeof createAreaSchema>;
 
-export function FormArea({ title, defaultValues,reference }: IFormArea) {
+export function FormArea({ title, defaultValues,reference,type }: IFormArea) {
   const dialog = useDialog();
   const {
     handleSubmit,
@@ -137,7 +138,7 @@ export function FormArea({ title, defaultValues,reference }: IFormArea) {
           />
         </FormGroup>
         {
-          defaultValues?.name?
+          type === 'view'?
             <FormFooter>
               <Button
                 type="button"
@@ -149,13 +150,6 @@ export function FormArea({ title, defaultValues,reference }: IFormArea) {
             </FormFooter>
           :
             <FormFooter>
-              <Button
-                type="button"
-                onClick={() => dialog?.close()}
-                variant="outlined"
-              >
-                Voltar
-              </Button>
               <Button type="submit">Salvar</Button>
             </FormFooter>
         }
