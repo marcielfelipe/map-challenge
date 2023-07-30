@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDialog } from "@/contexts/dialog";
 import L from "leaflet";
-import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
+import { MapContainer, TileLayer, FeatureGroup, Marker, Popup, useMapEvents, useMap, useMapEvent } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import { CreateAreaSchemaOutput, FormArea, IDefaultValues } from "../FormArea";
 import { toast } from "react-toastify";
@@ -200,13 +200,21 @@ interface IPolygonAreaProps {
 }
 function PolygonArea(props: IPolygonAreaProps) {
   const context = useLeafletContext();
-
+  const map = useMap()
   useEffect(() => {
+    map.on('zoomend',()=>localStorage.setItem('zoom',map.getZoom().toString()))
+    map.on('moveend',()=>localStorage.setItem('view',map.getCenter().toString()))
+
     const polygon = L.polygon(props.positions, {
       attribution: props.id,
     }) as any;
     const container = context.layerContainer || context.map;
     container.addLayer(polygon);
+    const zoom = Number(localStorage.getItem('zoom'))
+    const view = localStorage.getItem('view') as any
+    const regex = /-?\d+\.\d+/g;
+    const numbersArray = view.match(regex).map(Number) as any;
+    map.setView(numbersArray,zoom)
 
     return () => {
       container.removeLayer(polygon);

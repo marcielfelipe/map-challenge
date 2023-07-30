@@ -21,11 +21,13 @@ const roboto = Roboto({
 export default function App({ Component, pageProps }: AppProps) {
   return(
     <>
+      <title>Map Challenge</title>
       <style jsx global>{`
         html {
           font-family: ${roboto.style.fontFamily};
         }
       `}</style>
+
       <ToastContainer
         draggable={false}
         autoClose={3000}

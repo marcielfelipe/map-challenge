@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic'
-import Head from 'next/head'
 
 const Map = dynamic(() => import('../components/Map'),{
   loading:()=><p>Loading...</p>,
@@ -22,9 +21,6 @@ export default function Home() {
   
   return (
     <>
-      <Head>
-        <title>Map Challenge</title>
-      </Head>
       <Dialog/>
       <Container>
         <MapContainer>
