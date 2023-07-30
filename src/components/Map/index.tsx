@@ -203,7 +203,7 @@ function PolygonArea(props: IPolygonAreaProps) {
   const map = useMap()
   useEffect(() => {
     map.on('zoomend',()=>localStorage.setItem('zoom',map.getZoom().toString()))
-    map.on('moveend',()=>localStorage.setItem('view',map.getCenter().toString()))
+    // map.on('moveend',()=>localStorage.setItem('view',map.getCenter().toString()))
 
     const polygon = L.polygon(props.positions, {
       attribution: props.id,
@@ -211,10 +211,11 @@ function PolygonArea(props: IPolygonAreaProps) {
     const container = context.layerContainer || context.map;
     container.addLayer(polygon);
     const zoom = Number(localStorage.getItem('zoom'))
-    const view = localStorage.getItem('view') as any
-    const regex = /-?\d+\.\d+/g;
-    const numbersArray = view.match(regex).map(Number) as any;
-    map.setView(numbersArray,zoom)
+    // const view = localStorage.getItem('view') as any
+    // const regex = /-?\d+\.\d+/g;
+    // const numbersArray = view.match(regex).map(Number) as any;
+    // map.setView(numbersArray,zoom)
+    map.setZoom(zoom)
 
     return () => {
       container.removeLayer(polygon);
