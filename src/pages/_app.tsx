@@ -5,6 +5,8 @@ import type { AppProps } from 'next/app'
 import { ThemeProvider } from 'styled-components'
 import '../styles/styles.css'
 import 'react-toastify/dist/ReactToastify.css';
+import 'node_modules/leaflet/dist/leaflet.css'
+import 'node_modules/leaflet-draw/dist/leaflet.draw.css'
 import { DialogProvider } from '@/contexts/dialog'
 import { ModalProvider } from 'styled-react-modal'
 import { Roboto } from 'next/font/google'
