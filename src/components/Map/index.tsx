@@ -1,28 +1,25 @@
-import { useState, useRef, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 import { useDialog } from "@/contexts/dialog";
-import { LeafletEvent, LeafletMouseEvent,latLng,polygon } from "leaflet";
+import L from "leaflet";
 import {
   MapContainer,
   TileLayer,
   FeatureGroup,
-  Polygon,
 } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import { CreateAreaSchemaOutput, FormArea } from "../Form/FormArea";
-import axios from "axios";
 import { toast } from 'react-toastify';
 import geocodeService from '@/services/geocode.service';
 import { ICoordinates } from '@/services/types';
 import { useLeafletContext } from '@react-leaflet/core';
 
 interface IMapLayer {
-  id: number;
+  id: string;
   positions: [number, number][];
 }
 
 export default function Map() {
   const dialog = useDialog();
-  const mapRef = useRef(null);
   const [mapLayers, setMapLayers] = useState<IMapLayer[]>([]);
 
   async function getAddress(coordinates:ICoordinates,reference:number){
@@ -52,15 +49,7 @@ export default function Map() {
       }
     );
   }
-  // function removeItemsNotInArray2(savedAreas: CreateAreaSchemaOutput[], array2: any) {
-  //   // Cria um novo array que conterá apenas os itens presentes em array2
-  //   const newArray = array2.filter((item2) => {
-  //     // Verifica se o item2.id está presente em algum item de array1
-  //     return savedAreas.some((savedArea) => savedArea.drawId === item2.id);
-  //   });
   
-  //   return newArray;
-  // }
   async function openFormArea(reference:number,defaultValues:CreateAreaSchemaOutput){
     dialog?.open({
       element: (
@@ -87,31 +76,45 @@ export default function Map() {
     localStorage.setItem("drawnPolygons", JSON.stringify(newMapLayers));
     getAddress(draw.getLatLngs()[0][0],draw._leaflet_id)
   }
-    
+  
+  function onEdit(e: any) {}
 
-
-  function onEdit(e: LeafletEvent) {}
   function _onDeleted(e: any) {
-    // const {
-    //   layers: { _layers },
-    // } = e;
-    // console.log(_layers)
-    // const areas: CreateAreaSchemaOutput[] = JSON.parse(
-    //   localStorage.getItem("@map-challenge:areas") ?? "[]"
-    // );
+    const {
+      layers: { _layers },
+    } = e;
+    const savedAreas: CreateAreaSchemaOutput[] = JSON.parse(
+      localStorage.getItem("@map-challenge:areas") ?? "[]"
+    );
+    let newAreas:any
+    Object.values(_layers).map((layerToDelete:any)=>{
+      newAreas=savedAreas.filter(area => area.drawId !== layerToDelete.options.attribution)
+    })
+    localStorage.setItem("@map-challenge:areas",JSON.stringify(newAreas))
+
+    const savedDraws: IMapLayer[] = JSON.parse(
+      localStorage.getItem("drawnPolygons") ?? "[]"
+    );
+    var newDraws:IMapLayer[]=[]
+    Object.values(_layers).map((layerToDelete:any)=>{
+      newDraws=savedDraws.filter((draw) => draw.id !== layerToDelete.options.attribution)
+    })
+    localStorage.setItem("drawnPolygons",JSON.stringify(newDraws))
+    setMapLayers(newDraws)
+
   }
 
-  function handleOpenDetails(e: LeafletMouseEvent) {
+  function handleOpenDetails(e: any) {
     const draw = e.layer;
     const areas: CreateAreaSchemaOutput[] = JSON.parse(
       localStorage.getItem("@map-challenge:areas") ?? "[]"
     );
-    const areaDetails = areas.find((area) => area.drawId === draw._leaflet_id);
+    const areaDetails = areas.find((area) => area.drawId === draw.options.attribution);
     dialog?.open({
       element: (
         <FormArea
-          title={`Detalhes da área: ${draw._leaflet_id}`}
-          reference={draw._leaflet_id}
+          title={`Detalhes da área: ${draw.options.attribution}`}
+          reference={draw.options.attribution}
           defaultValues={areaDetails}
           type="view"
         />
@@ -125,65 +128,66 @@ export default function Map() {
     setMapLayers([...savedMapLayers]);
   },[])
 
-  return (
-    <MapContainer
-      center={[-23.5489, -46.6388]}
-      zoom={7}
-      style={{ width: "100%", height: "100%" }}
-      ref={mapRef}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <FeatureGroup
-        eventHandlers={{
-          click: (e) => handleOpenDetails(e),
-        }}
-        pane=''
-      >
-        <EditControl
-          position="topright"
-          onEdited={onEdit}
-          onCreated={_onCreate}
-          onDeleted={_onDeleted}
-          draw={{
-            rectangle: false,
-            circle: false,
-            circlemarker: false,
-            marker: false,
-            polyline: false,
-          }}
-        />
-        <AddLayers mapLayers={JSON.parse(localStorage.getItem("drawnPolygons")!) || []}/>
+  const center:[number,number]=[-23.5489, -46.6388]
 
-        {/* {mapLayers.map((layer) => (
-            <Polygon 
-              key={layer.id} 
-              positions={layer.positions}  
-              attribution={String(layer.id)}
-            />
-        ))} */}
-      </FeatureGroup>
-    </MapContainer>
+  return (
+      <MapContainer
+        center={center}
+        zoom={7}
+        style={{ width: "100%", height: "100%" }}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <FeatureGroup
+          eventHandlers={{
+            click: (e) => handleOpenDetails(e),
+          }}
+        >
+          <EditControl
+            position="topright"
+            onEdited={onEdit}
+            onCreated={_onCreate}
+            onDeleted={_onDeleted}
+            draw={{
+              rectangle: false,
+              circle: false,
+              circlemarker: false,
+              marker: false,
+              polyline: false,
+            }}
+          />
+          
+          {
+            mapLayers.map((layer)=>{
+              return(
+                <PolygonArea key={layer.id} id={layer.id}  positions={layer.positions}  />
+              )
+            })
+          }
+        </FeatureGroup>
+      </MapContainer>
   );
 }
 
-function AddLayers({mapLayers}:any){
+
+interface IPolygonAreaProps{
+  id: string;
+  positions: [number, number][];
+}
+function PolygonArea(props:IPolygonAreaProps) {
   const context = useLeafletContext()
-  const container = context.layerContainer || context.map
 
   useEffect(() => {
-    console.log('effect')
-    console.log(mapLayers)
-    mapLayers.length>0 && mapLayers?.map((layer:any)=>{
-      console.log(layer)
-      container.addLayer(polygon(layer.positions))
-    })
-   
-   
-  }, []);
-  return(
-    <p>opa</p>
-  )
+    const polygon = L.polygon(props.positions,{attribution:props.id}) as any
+    const container = context.layerContainer || context.map
+    container.addLayer(polygon)
+
+    return () => {
+      container.removeLayer(polygon)
+    }
+  })
+
+  return null
 }
