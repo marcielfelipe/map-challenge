@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 
-export const FormContainer = styled.div`
+export const Container = styled.div`
   background-color: white;
   width: 100%;
   height: 100%;
@@ -18,12 +18,11 @@ export const FormGroup = styled.div`
     flex-direction: column;
   }
 `
-
-export const Form = styled.form`
+export const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   gap: .7rem;
-  height: 85%;
+  height: 90%;
 `
 export const FormFooter = styled.div`
   display: flex;

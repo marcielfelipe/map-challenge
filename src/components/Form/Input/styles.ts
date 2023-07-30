@@ -1,5 +1,5 @@
 import { styled } from 'styled-components';
-import { IInput } from '.';
+import { IInput, IInputLabel } from '.';
 
 
 export const InputContainer = styled.div`
@@ -8,10 +8,11 @@ export const InputContainer = styled.div`
   flex-direction: column;
 `
 
-export const InputLabel = styled.label`
+export const InputLabel = styled.label<IInputLabel>`
   padding-left: .8rem;
   padding-bottom: .5rem;
   font-size: .8rem;
+  color: ${props =>props.error?props.theme.error:props.theme.black};
 `
 export const InputError = styled.span`
   color: ${props =>props.theme.error};
@@ -24,6 +25,6 @@ export const InputStyled = styled.input<IInput>`
   height: 2rem;
   padding: 1rem;
   border: 1px solid ${props =>props.theme.primary};
-  border-color: ${props =>props.errors[props.name]?.message?props.theme.error:props.theme.primary};
+  border-color: ${props =>props?.error?.message?props.theme.error:props.theme.primary};
   border-radius: 1rem;
 `;

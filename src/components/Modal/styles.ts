@@ -3,7 +3,7 @@ import Modal from 'styled-react-modal'
 export const StyledModal = Modal.styled`
   width:40rem;
   max-width: 90vw;
-  height: 34rem;
+  height: 38rem;
   max-height: 100vh;
   display: flex;
   flex-direction: column;

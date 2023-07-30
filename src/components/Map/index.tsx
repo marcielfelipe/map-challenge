@@ -3,7 +3,7 @@ import { useDialog } from "@/contexts/dialog";
 import L from "leaflet";
 import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
-import { CreateAreaSchemaOutput, FormArea } from "../Form/FormArea";
+import { CreateAreaSchemaOutput, FormArea, IDefaultValues } from "../FormArea";
 import { toast } from "react-toastify";
 import geocodeService from "@/services/geocode.service";
 import { ICoordinates } from "@/services/types";
@@ -23,10 +23,8 @@ export default function Map() {
     toast.promise(
       geocodeService.getAddress(coordinates).then(({ data }) => {
         const address = data.results[0].address_components;
-        var defaultValues: CreateAreaSchemaOutput = {
+        var defaultValues:IDefaultValues = {
           ...getFormattedAddress(address),
-          name: "",
-          nameArea: "",
           drawId: reference,
         };
         openFormArea(reference, defaultValues);
@@ -45,7 +43,7 @@ export default function Map() {
 
   async function openFormArea(
     reference: number,
-    defaultValues: CreateAreaSchemaOutput
+    defaultValues: IDefaultValues
   ) {
     dialog?.open({
       element: (
