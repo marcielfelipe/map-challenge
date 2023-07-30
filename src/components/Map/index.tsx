@@ -79,8 +79,6 @@ export default function Map() {
       layers: { _layers },
     } = e;
 
-    console.log(_layers);
-
     const savedDraws: IMapLayer[] = JSON.parse(
       localStorage.getItem("@map-challenge:polygons") ?? "[]"
     );
