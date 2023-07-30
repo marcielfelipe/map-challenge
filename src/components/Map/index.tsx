@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import geocodeService from "@/services/geocode.service";
 import { ICoordinates } from "@/services/types";
 import { useLeafletContext } from "@react-leaflet/core";
+import { getFormattedAddress } from '@/utils/getAddress';
 
 interface IMapLayer {
   id: string;
@@ -21,13 +22,9 @@ export default function Map() {
   async function getAddress(coordinates: ICoordinates, reference: number) {
     toast.promise(
       geocodeService.getAddress(coordinates).then(({ data }) => {
-        const firstAddress = data.results[0];
-        const defaultValues: CreateAreaSchemaOutput = {
-          street: `${firstAddress.address_components[1]?.long_name}, ${firstAddress.address_components[0]?.long_name}`,
-          district: firstAddress.address_components[2]?.long_name,
-          city: firstAddress.address_components[3]?.long_name,
-          state: firstAddress.address_components[4]?.long_name,
-          country: firstAddress.address_components[5]?.long_name,
+        const address = data.results[0].address_components;
+        var defaultValues: CreateAreaSchemaOutput = {
+          ...getFormattedAddress(address),
           name: "",
           nameArea: "",
           drawId: reference,
@@ -91,11 +88,11 @@ export default function Map() {
     );
 
     Object.values(_layers).map((layerToUpdate: any) => {
-      savedDraws.map(savedDraw=>{
-        if(savedDraw.id===layerToUpdate.options.attribution){
-          savedDraw.positions = layerToUpdate.getLatLngs()[0]
+      savedDraws.map((savedDraw) => {
+        if (savedDraw.id === layerToUpdate.options.attribution) {
+          savedDraw.positions = layerToUpdate.getLatLngs()[0];
         }
-      })
+      });
     });
 
     localStorage.setItem("@map-challenge:polygons", JSON.stringify(savedDraws));
