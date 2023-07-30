@@ -104,7 +104,7 @@ export function FormArea({ title, defaultValues,reference,type }: IFormArea) {
         />
         <Input
           errors={errors}
-          label="Nome"
+          label="Nome do proprietário"
           id="name"
           name="name"
           type="text"

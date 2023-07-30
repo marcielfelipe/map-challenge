@@ -1,17 +1,13 @@
 import { useState, useEffect } from "react";
 import { useDialog } from "@/contexts/dialog";
 import L from "leaflet";
-import {
-  MapContainer,
-  TileLayer,
-  FeatureGroup,
-} from "react-leaflet";
+import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import { CreateAreaSchemaOutput, FormArea } from "../Form/FormArea";
-import { toast } from 'react-toastify';
-import geocodeService from '@/services/geocode.service';
-import { ICoordinates } from '@/services/types';
-import { useLeafletContext } from '@react-leaflet/core';
+import { toast } from "react-toastify";
+import geocodeService from "@/services/geocode.service";
+import { ICoordinates } from "@/services/types";
+import { useLeafletContext } from "@react-leaflet/core";
 
 interface IMapLayer {
   id: string;
@@ -22,21 +18,21 @@ export default function Map() {
   const dialog = useDialog();
   const [mapLayers, setMapLayers] = useState<IMapLayer[]>([]);
 
-  async function getAddress(coordinates:ICoordinates,reference:number){
+  async function getAddress(coordinates: ICoordinates, reference: number) {
     toast.promise(
-      geocodeService.getAddress(coordinates).then(({data}) => {
-        const firstAddress = data.results[0]
-        const defaultValues:CreateAreaSchemaOutput={
-          street:`${firstAddress.address_components[1]?.long_name}, ${firstAddress.address_components[0]?.long_name}`,
+      geocodeService.getAddress(coordinates).then(({ data }) => {
+        const firstAddress = data.results[0];
+        const defaultValues: CreateAreaSchemaOutput = {
+          street: `${firstAddress.address_components[1]?.long_name}, ${firstAddress.address_components[0]?.long_name}`,
           district: firstAddress.address_components[2]?.long_name,
           city: firstAddress.address_components[3]?.long_name,
-          state:firstAddress.address_components[4]?.long_name,
+          state: firstAddress.address_components[4]?.long_name,
           country: firstAddress.address_components[5]?.long_name,
-          name:'',
-          nameArea:'',
-          drawId:reference
-        }
-        openFormArea(reference,defaultValues)
+          name: "",
+          nameArea: "",
+          drawId: reference,
+        };
+        openFormArea(reference, defaultValues);
       }),
       {
         pending: `Buscando endereço...`,
@@ -49,8 +45,11 @@ export default function Map() {
       }
     );
   }
-  
-  async function openFormArea(reference:number,defaultValues:CreateAreaSchemaOutput){
+
+  async function openFormArea(
+    reference: number,
+    defaultValues: CreateAreaSchemaOutput
+  ) {
     dialog?.open({
       element: (
         <FormArea
@@ -66,18 +65,42 @@ export default function Map() {
   function _onCreate(e: any) {
     const draw = e.layer;
     const newMapLayers =
-      JSON.parse(localStorage.getItem("drawnPolygons")!) || [];
+      JSON.parse(localStorage.getItem("@map-challenge:polygons")!) || [];
     newMapLayers.push({
       id: draw._leaflet_id,
       positions: draw.getLatLngs()[0],
     });
     setMapLayers(newMapLayers);
-    
-    localStorage.setItem("drawnPolygons", JSON.stringify(newMapLayers));
-    getAddress(draw.getLatLngs()[0][0],draw._leaflet_id)
+
+    localStorage.setItem(
+      "@map-challenge:polygons",
+      JSON.stringify(newMapLayers)
+    );
+    getAddress(draw.getLatLngs()[0][0], draw._leaflet_id);
   }
-  
-  function onEdit(e: any) {}
+
+  function onEdit(e: any) {
+    const {
+      layers: { _layers },
+    } = e;
+
+    console.log(_layers);
+
+    const savedDraws: IMapLayer[] = JSON.parse(
+      localStorage.getItem("@map-challenge:polygons") ?? "[]"
+    );
+
+    Object.values(_layers).map((layerToUpdate: any) => {
+      savedDraws.map(savedDraw=>{
+        if(savedDraw.id===layerToUpdate.options.attribution){
+          savedDraw.positions = layerToUpdate.getLatLngs()[0]
+        }
+      })
+    });
+
+    localStorage.setItem("@map-challenge:polygons", JSON.stringify(savedDraws));
+    setMapLayers(savedDraws);
+  }
 
   function _onDeleted(e: any) {
     const {
@@ -86,22 +109,25 @@ export default function Map() {
     const savedAreas: CreateAreaSchemaOutput[] = JSON.parse(
       localStorage.getItem("@map-challenge:areas") ?? "[]"
     );
-    let newAreas:any
-    Object.values(_layers).map((layerToDelete:any)=>{
-      newAreas=savedAreas.filter(area => area.drawId !== layerToDelete.options.attribution)
-    })
-    localStorage.setItem("@map-challenge:areas",JSON.stringify(newAreas))
+    let newAreas: any;
+    Object.values(_layers).map((layerToDelete: any) => {
+      newAreas = savedAreas.filter(
+        (area) => area.drawId !== layerToDelete.options.attribution
+      );
+    });
+    localStorage.setItem("@map-challenge:areas", JSON.stringify(newAreas));
 
     const savedDraws: IMapLayer[] = JSON.parse(
-      localStorage.getItem("drawnPolygons") ?? "[]"
+      localStorage.getItem("@map-challenge:polygons") ?? "[]"
     );
-    var newDraws:IMapLayer[]=[]
-    Object.values(_layers).map((layerToDelete:any)=>{
-      newDraws=savedDraws.filter((draw) => draw.id !== layerToDelete.options.attribution)
-    })
-    localStorage.setItem("drawnPolygons",JSON.stringify(newDraws))
-    setMapLayers(newDraws)
-
+    var newDraws: IMapLayer[] = [];
+    Object.values(_layers).map((layerToDelete: any) => {
+      newDraws = savedDraws.filter(
+        (draw) => draw.id !== layerToDelete.options.attribution
+      );
+    });
+    localStorage.setItem("@map-challenge:polygons", JSON.stringify(newDraws));
+    setMapLayers(newDraws);
   }
 
   function handleOpenDetails(e: any) {
@@ -109,7 +135,9 @@ export default function Map() {
     const areas: CreateAreaSchemaOutput[] = JSON.parse(
       localStorage.getItem("@map-challenge:areas") ?? "[]"
     );
-    const areaDetails = areas.find((area) => area.drawId === draw.options.attribution);
+    const areaDetails = areas.find(
+      (area) => area.drawId === draw.options.attribution
+    );
     dialog?.open({
       element: (
         <FormArea
@@ -123,71 +151,74 @@ export default function Map() {
   }
 
   useEffect(() => {
-    const savedMapLayers:any[] =
-      JSON.parse(localStorage.getItem("drawnPolygons")!) || [];
+    const savedMapLayers: any[] =
+      JSON.parse(localStorage.getItem("@map-challenge:polygons")!) || [];
     setMapLayers([...savedMapLayers]);
-  },[])
+  }, []);
 
-  const center:[number,number]=[-23.5489, -46.6388]
+  const center: [number, number] = [-23.5489, -46.6388];
 
   return (
-      <MapContainer
-        center={center}
-        zoom={7}
-        style={{ width: "100%", height: "100%" }}
+    <MapContainer
+      center={center}
+      zoom={7}
+      style={{ width: "100%", height: "100%" }}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <FeatureGroup
+        eventHandlers={{
+          click: (e) => handleOpenDetails(e),
+        }}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <FeatureGroup
-          eventHandlers={{
-            click: (e) => handleOpenDetails(e),
+        <EditControl
+          position="topright"
+          onEdited={onEdit}
+          onCreated={_onCreate}
+          onDeleted={_onDeleted}
+          draw={{
+            rectangle: false,
+            circle: false,
+            circlemarker: false,
+            marker: false,
+            polyline: false,
           }}
-        >
-          <EditControl
-            position="topright"
-            onEdited={onEdit}
-            onCreated={_onCreate}
-            onDeleted={_onDeleted}
-            draw={{
-              rectangle: false,
-              circle: false,
-              circlemarker: false,
-              marker: false,
-              polyline: false,
-            }}
-          />
-          
-          {
-            mapLayers.map((layer)=>{
-              return(
-                <PolygonArea key={layer.id} id={layer.id}  positions={layer.positions}  />
-              )
-            })
-          }
-        </FeatureGroup>
-      </MapContainer>
+        />
+
+        {mapLayers.map((layer) => {
+          return (
+            <PolygonArea
+              key={layer.id}
+              id={layer.id}
+              positions={layer.positions}
+            />
+          );
+        })}
+      </FeatureGroup>
+    </MapContainer>
   );
 }
 
-
-interface IPolygonAreaProps{
+interface IPolygonAreaProps {
   id: string;
   positions: [number, number][];
 }
-function PolygonArea(props:IPolygonAreaProps) {
-  const context = useLeafletContext()
+function PolygonArea(props: IPolygonAreaProps) {
+  const context = useLeafletContext();
 
   useEffect(() => {
-    const polygon = L.polygon(props.positions,{attribution:props.id}) as any
-    const container = context.layerContainer || context.map
-    container.addLayer(polygon)
+    const polygon = L.polygon(props.positions, {
+      attribution: props.id,
+    }) as any;
+    const container = context.layerContainer || context.map;
+    container.addLayer(polygon);
 
     return () => {
-      container.removeLayer(polygon)
-    }
-  })
+      container.removeLayer(polygon);
+    };
+  });
 
-  return null
+  return null;
 }
