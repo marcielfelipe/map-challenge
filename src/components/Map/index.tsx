@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useDialog } from "@/contexts/dialog";
-import L from "leaflet";
-import { MapContainer, TileLayer, FeatureGroup, Marker, Popup, useMapEvents, useMap, useMapEvent } from "react-leaflet";
+import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import { CreateAreaSchemaOutput, FormArea, IDefaultValues } from "../FormArea";
 import { toast } from "react-toastify";
 import geocodeService from "@/services/geocode.service";
 import { ICoordinates } from "@/services/types";
-import { useLeafletContext } from "@react-leaflet/core";
 import { getFormattedAddress } from '@/utils/getAddress';
+import { PolygonArea } from './PolygonArea';
+
 
 interface IMapLayer {
   id: string;
@@ -194,24 +194,5 @@ export default function Map() {
   );
 }
 
-interface IPolygonAreaProps {
-  id: string;
-  positions: [number, number][];
-}
-function PolygonArea(props: IPolygonAreaProps) {
-  const context = useLeafletContext();
-  useEffect(() => {
 
-    const polygon = L.polygon(props.positions, {
-      attribution: props.id,
-    }) as any;
-    const container = context.layerContainer || context.map;
-    container.addLayer(polygon);
 
-    return () => {
-      container.removeLayer(polygon);
-    };
-  });
-
-  return null;
-}
