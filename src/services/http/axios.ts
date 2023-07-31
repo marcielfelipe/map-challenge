@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export function getAPIClient(ctx?: any) {
+export function getAPIClient() {
   const api = axios.create();
   return api;
 }

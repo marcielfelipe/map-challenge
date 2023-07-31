@@ -12,7 +12,7 @@ export function PolygonArea(props: IPolygonAreaProps) {
 
     const polygon = L.polygon(props.positions, {
       attribution: props.id,
-    }) as any;
+    });
     const container = context.layerContainer || context.map;
     container.addLayer(polygon);
 

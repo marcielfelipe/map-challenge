@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface IDialogItem {
   element: ReactNode;
-  onClose?(any: any): void | Promise<void>;
 }
 interface IDialogContext{
   isOpen: boolean
@@ -10,12 +9,15 @@ interface IDialogContext{
   close:()=>void
   element: ReactNode
 }
+interface IDialogProvider{
+  children: ReactNode
+}
 
 // context
 const DialogContext = createContext<IDialogContext|undefined>(undefined);
 
 // Provider
-const DialogProvider = ({ children }:any) => {
+const DialogProvider = ({ children }:IDialogProvider) => {
   const [isOpen, setIsOpen] = useState(false);
   const [element,setElement] = useState<ReactNode>()
 

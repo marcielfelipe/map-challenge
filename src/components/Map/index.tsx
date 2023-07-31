@@ -144,7 +144,7 @@ export default function Map() {
   }
 
   useEffect(() => {
-    const savedMapLayers: any[] =
+    const savedMapLayers: IMapLayer[] =
       JSON.parse(localStorage.getItem("@map-challenge:polygons")!) || [];
     setMapLayers([...savedMapLayers]);
   }, []);

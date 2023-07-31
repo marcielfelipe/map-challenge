@@ -1,15 +1,15 @@
 import React, { ComponentProps } from "react";
 import { InputContainer, InputStyled, InputLabel, InputError } from "./styles";
-import { Controller,useFormContext } from "react-hook-form";
+import { Controller,ErrorOption,useFormContext } from "react-hook-form";
 import get from "lodash/get";
 
 export interface IInput extends ComponentProps<"input"> {
   label?: string;
-  error?:any
+  error?:ErrorOption
   name: string;
 }
 export interface IInputLabel extends ComponentProps<"label"> {
-  error?:any
+  error?:ErrorOption
 }
 
 export function Input({ label, name, ...props }:IInput ){
@@ -24,7 +24,7 @@ export function Input({ label, name, ...props }:IInput ){
       name={name}
       render={({ field }) => (
         <InputContainer>
-          {label && <InputLabel error={!!error}>{label}</InputLabel>}
+          {label && <InputLabel error={error}>{label}</InputLabel>}
           <InputStyled
             {...props}
             error={error}
