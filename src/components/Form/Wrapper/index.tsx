@@ -1,6 +1,8 @@
 import { FormProvider, FormProviderProps } from 'react-hook-form';
 
-export function Wrapper({children, ...props}:FormProviderProps){
+export const Wrapper: React.FC<FormProviderProps<any, any>> = ({
+  children,
+  ...props
+}) => {
   return <FormProvider {...props}>{children}</FormProvider>;
-  
-}
+};
