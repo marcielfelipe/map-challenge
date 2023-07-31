@@ -1,11 +1,11 @@
 import { IAddressComponent } from "@/services/types";
 
 export interface IAddressFormatted {
-  street: string;
-  district: string;
-  city: string;
-  state: string;
-  country: string;
+  street?: string;
+  district?: string;
+  city?: string;
+  state?: string;
+  country?: string;
 }
 enum TypeAdressEnum {
   STREET = "street",
@@ -72,11 +72,11 @@ function returnAdress(allAdress:IAddressComponent[],type:TypeAdressEnum){
       addressReturn = addresFound
     }
   })
-  return addressReturn||''
+  return addressReturn
 }
 
 export function getFormattedAddress(address: IAddressComponent[]) {
-  const number = returnAdress(address,TypeAdressEnum.STREET_NUMBER)
+  const number = returnAdress(address,TypeAdressEnum.STREET_NUMBER)||''
   const street = returnAdress(address,TypeAdressEnum.STREET)
 
   var formattedAddress:IAddressFormatted= {
@@ -87,9 +87,9 @@ export function getFormattedAddress(address: IAddressComponent[]) {
     country:returnAdress(address,TypeAdressEnum.COUNTRY),
   };
 
-  let newStreet = formattedAddress.street.trim()
-  if(newStreet.endsWith(',')){
-    formattedAddress.street = newStreet.slice(0, -1)
+  let newStreet = formattedAddress?.street?.trim()
+  if(newStreet?.endsWith(',')){
+    formattedAddress.street = newStreet?.slice(0, -1)
   }
   return formattedAddress;
 }
