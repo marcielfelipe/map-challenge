@@ -63,7 +63,6 @@ Start the server
 - [react](https://react.dev/)
 - [next.js](https://nextjs.org/)
 - [styled-components](https://styled-components.com/docs)
-- [leaflet](https://leafletjs.com/)
 
 #### Maps
 
