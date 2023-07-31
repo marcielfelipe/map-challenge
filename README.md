@@ -1,47 +1,47 @@
 
 # Map-Challenge
 
-Desafio proposto no processo seletivo da empresa x
+Challenge proposed in the selection process of company x
 
 ## Deploy
 
-- [Acessar](https://map-challenge.marcielfelipe.com/)
+- [Access](https://map-challenge.marcielfelipe.com/)
 
-## Sobre o desafio 🤯
+## About the Challenge 🤯
 
- Existe uma grande demanda para registrar áreas de propriedades dos nossos clientes. Para resolver esse problema, gostaríamos que fosse criada uma plataforma com as seguintes funcionalidades:
+ There is a high demand for registering property areas for our clients. To solve this problem, we would like to create a platform with the following functionalities:
 
-- Tela inicial com a renderização do Mapa;
-- Consiga desenhar no mapa, a área da propriedade. [Polígono];
-- Ao completar o desenho de uma área, exibir modal com um formulário com o sequintes campos:
-  - Nome da propriedade
-  - Nome do proprietário
-  - Endereço - [Rua, Bairro, Cidade, Estado e País];
-- Buscar endereço  na "Google Geocoding API" e preencher os campos [Rua, Bairro, Cidade, Estado e País] de forma automática.
-- Salvar dados da Propriedade;
-- Ao pressionar na Área da propriedade, exibir um modal com o detalhes da propriedade.
-- Opção de deletar e editar a área e informações da propriedade.
-- Dados devem ser salvo no local storage.
+- Home screen with the rendering of the Map;
+- Be able to draw the property area on the map [Polygon];
+- After completing the drawing of an area, display a modal with a form  containing the following fields:
+  - Property Name
+  - Owner's Name
+  - Address - [Street, Neighborhood, City, State, and Country];
+- Use the "Google Geocoding API" to search for the address and automatically fill in the fields [Street, Neighborhood, City, State, and Country];
+- Save Property data;
+- When clicking on the Property area, display a modal with the details of the property.
+- Option to delete and edit the area and property information.
+- Data should be saved in local storage.
 
-## Demostração
+## Demo
 
-![Alt text](screenshot.png)
-![Alt text](screenshot2.png)
+![Home](screenshot.png)
+![Form](screenshot2.png)
 
-## Rodando localmente
+## Running locally
 
-Clone o projeto
+Clone the project
 
 ```bash
   git clone https://github.com/marcielfelipe/map-challenge.git
 
-Entre no diretório do projeto
+Navigate to the project directory
 
 ```bash
   cd map-challenge
 ```
 
-Instale as dependências
+Install dependencies
 
 ```bash
   npm install
@@ -49,7 +49,7 @@ Instale as dependências
   yarn
 ```
 
-Inicie o servidor
+Start the server
 
 ```bash
   npm run start
@@ -57,13 +57,20 @@ Inicie o servidor
   yarn start
 ```
 
-## Stack utilizada
+## Used Stack
 
 - [react](https://react.dev/)
 - [next.js](https://nextjs.org/)
 - [styled-components](https://styled-components.com/docs)
 - [leaflet](https://leafletjs.com/)
+
+#### Maps
+
 - [react-leaflet](https://react-leaflet.js.org/)
 - [react-leaflet-draw](https://www.npmjs.com/package/react-leaflet-draw)
 - [react-leaflet-draw](https://www.npmjs.com/package/react-leaflet-draw)
+
+#### Form Validation
+
+- [react-hook-form](https://www.npmjs.com/package/react-leaflet-draw)
 - [react-hook-form](https://www.npmjs.com/package/react-leaflet-draw)
