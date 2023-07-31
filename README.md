@@ -1,7 +1,7 @@
 
 # Map-Challenge
 
-Challenge proposed in the selection process of company x
+The challenge was proposed in the selection process of company x
 
 ## Deploy
 
