@@ -66,11 +66,11 @@ Start the server
 
 #### Maps
 
+- [leaflet](https://leafletjs.com/)
 - [react-leaflet](https://react-leaflet.js.org/)
-- [react-leaflet-draw](https://www.npmjs.com/package/react-leaflet-draw)
 - [react-leaflet-draw](https://www.npmjs.com/package/react-leaflet-draw)
 
 #### Form Validation
 
 - [react-hook-form](https://www.npmjs.com/package/react-leaflet-draw)
-- [react-hook-form](https://www.npmjs.com/package/react-leaflet-draw)
+- [zod](https://zod.dev/)
