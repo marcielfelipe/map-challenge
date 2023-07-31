@@ -34,6 +34,7 @@ Clone the project
 
 ```bash
   git clone https://github.com/marcielfelipe/map-challenge.git
+```
 
 Navigate to the project directory
 
